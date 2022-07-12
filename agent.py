@@ -60,17 +60,13 @@ def get_agent_move(board: Board, own_player: Player) -> Tuple[int, int]:
 
 def minmax(node, alpha, beta, is_max):
     if node.is_leaf():
-        #print(f'Node: {node.get_value()} - {node._own_player}')
-        #print(node._board.board_string())
-        #print("-" * 10)
-
         return node.get_value(), node.path
 
     if is_max:
         value = -5
         best_move = None
 
-        for child in node.get_children()[::-1]:
+        for child in node.get_children():
 
             res, path = minmax(child, alpha, beta, False)
 
@@ -78,11 +74,10 @@ def minmax(node, alpha, beta, is_max):
                 value = res
                 best_move = child.path
 
-            if value >= beta:
-                break
-                pass
-            #    break
             alpha = max(alpha, value)
+            if beta <= alpha:
+                break
+
         return value, best_move
 
     else:
@@ -96,10 +91,9 @@ def minmax(node, alpha, beta, is_max):
                 value = res
                 best_move = child.path
 
-            if value <= alpha:
-                pass
-                #break
             beta = min(beta, value)
+            if beta <= alpha:
+                break
         return value, best_move
 
 
