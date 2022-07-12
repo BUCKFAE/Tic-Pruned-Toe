@@ -36,14 +36,18 @@ class TestBoard(unittest.TestCase):
         board.current_player = Player.PLAYER_2
         assert board.get_winner() == Player.PLAYER_2
 
-    def test_get_next_player(self):
+    def test_get_set_value(self):
         board = Board()
-        assert board.get_next_player() == Player.PLAYER_1
-        assert board.get_next_player() == Player.PLAYER_2
-        assert board.get_next_player() == Player.PLAYER_1
-        assert board.get_next_player() == Player.PLAYER_2
-        assert board.get_next_player() == Player.PLAYER_1
-        assert board.get_next_player() == Player.PLAYER_2
+        board.set_value(0, 0, Player.PLAYER_1)
+        assert board.get_value(0, 0) == Player.PLAYER_1
+        assert (0, 0) not in board.get_valid_turns()
+
+        board.set_value(1, 0, Player.PLAYER_2)
+        assert board.get_value(1, 0) == Player.PLAYER_2
+        assert (1, 0) not in board.get_valid_turns()
+
+        board.set_value(2, 1, Player.PLAYER_1)
+        assert board.get_value(2, 1) == Player.PLAYER_1
 
 
 if __name__ == '__main__':

@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from agent import get_agent_move
+from agent import get_agent_move, get_other_player
 from board import Board, Player
 
 
@@ -11,15 +11,15 @@ def main():
     is_p2_human = input(f'Is player 2 a human? [y/N]: ').lower() == 'y'
 
     board = Board()
-    player = board.get_next_player()
+    player = Player.PLAYER_1
 
     while True:
 
         # Getting next move
         if player == player.PLAYER_1:
-            next_turn = get_human_move(board) if is_p1_human else get_agent_move(board, player)
+            next_turn = get_human_move(board) if is_p1_human else get_agent_move(board, Player.PLAYER_1)
         else:
-            next_turn = get_human_move(board) if is_p2_human else get_agent_move(board, player)
+            next_turn = get_human_move(board) if is_p2_human else get_agent_move(board, Player.PLAYER_2)
 
         print(f'Move: {next_turn}')
 
@@ -31,8 +31,7 @@ def main():
             print(f'\n\n{board.board_string()}\n\nWinner: {winner}')
             break
 
-        player = board.get_next_player()
-
+        player = get_other_player(player)
 
 
 def get_human_move(board: Board) -> Tuple[int, int]:

@@ -24,11 +24,9 @@ class Board:
 
     def __init__(self):
         self.board = np.zeros((3, 3), dtype=int)
-        self.current_player = Player.NO_PLAYER
 
     def set_value(self, x: int, y: int, p: Player):
         assert p != Player.NO_PLAYER
-        assert self.board[y][x] == Player.NO_PLAYER.value
         self.board[y][x] = p.value
 
     def get_value(self, x: int, y: int) -> Player:
@@ -42,28 +40,25 @@ class Board:
     def get_valid_turns(self) -> List[Tuple[int, int]]:
         return [(x, y) for x in range(3) for y in range(3) if self.get_value(x, y) == Player.NO_PLAYER]
 
-    def get_next_player(self):
-        self.current_player = Player.PLAYER_2 if self.current_player == Player.PLAYER_1 else Player.PLAYER_1
-        return self.current_player
-
     def get_winner(self) -> Player:
 
-        for i in range(3):
+        for player in [Player.PLAYER_1, Player.PLAYER_2]:
+            for i in range(3):
 
-            # Row win
-            if all([self.board[i][j] == self.current_player.value for j in range(3)]):
-                return self.current_player
+                # Row win
+                if all([self.board[i][j] == player.value for j in range(3)]):
+                    return player
 
-            # Col win
-            if all([self.board[j][i] == self.current_player.value for j in range(3)]):
-                return self.current_player
+                # Col win
+                if all([self.board[j][i] == player.value for j in range(3)]):
+                    return player
 
-        # Diag win
-        if all(np.diag(self.board) == self.current_player.value):
-            return self.current_player
+            # Diag win
+            if all(np.diag(self.board) == player.value):
+                return player
 
-        if all(np.diag(np.fliplr(self.board)) == self.current_player.value):
-            return self.current_player
+            if all(np.diag(np.fliplr(self.board)) == player.value):
+                return player
 
         return Player.NO_PLAYER
 
