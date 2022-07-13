@@ -1,10 +1,6 @@
-import random
 import copy
-import sys
-from math import inf
+import random
 from typing import Tuple, List, Optional
-
-import numpy as np
 
 from board import Board, Player
 
@@ -54,29 +50,29 @@ class Node:
 
 def get_agent_move(board: Board, own_player: Player) -> Tuple[int, int]:
     root = Node(copy_board(board), True, own_player)
-    value, path = minmax(root, -2, +2)
+    value, path = minmax(root, -2, +2, True)
     print(f'Player: {own_player} Value: {value} - Path: {path}')
     return path
 
 
-def minmax(node, alpha, beta):
+def minmax(node, alpha, beta, isMax):
     if node.is_leaf():
         return node.get_value(), node.path
 
-    if node.is_max:
+    if isMax:
         value = -2
         best_move = None
 
         for child in node.get_children():
 
-            res, path = minmax(child, alpha, beta)
+            res, path = minmax(child, alpha, beta, False)
 
-            if res >= value:
+            if res > value:
                 value = res
                 best_move = child.path
 
-            #if value >= beta:
-            #    return value, best_move
+            if beta <= alpha:
+                return value, best_move
             alpha = max(alpha, value)
 
         return value, best_move
@@ -86,14 +82,14 @@ def minmax(node, alpha, beta):
         best_move = None
         for child in node.get_children():
 
-            res, path = minmax(child, alpha, beta)
+            res, path = minmax(child, alpha, beta, True)
 
-            if res <= value:
+            if res < value:
                 value = res
                 best_move = child.path
 
-            #if value <= alpha:
-            #    return value, best_move
+            if beta <= alpha:
+                return value, best_move
             beta = min(beta, value)
         return value, best_move
 

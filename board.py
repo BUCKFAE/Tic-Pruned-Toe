@@ -69,4 +69,3 @@ class Board:
                 return player
 
         return Player.NO_PLAYER
-
