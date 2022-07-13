@@ -1,4 +1,5 @@
 import random
+import copy
 import sys
 from math import inf
 from typing import Tuple, List, Optional
@@ -10,12 +11,12 @@ from board import Board, Player
 
 class Node:
 
-    def __init__(self, board: Board, is_max: bool, own_player: Player, path: Optional[Tuple[int, int]]=None):
+    def __init__(self, board: Board, is_max: bool, own_player: Player, path: Optional[Tuple[int, int]] = None):
         """Board is a fresh copy"""
         self._board = board
         self._own_player = own_player
         self.is_max = is_max
-        self.path = path
+        self.path = copy.deepcopy(path)
 
     def is_leaf(self) -> bool:
         return len(self._board.get_valid_turns()) == 0 or self._board.get_winner() != Player.NO_PLAYER
@@ -53,47 +54,47 @@ class Node:
 
 def get_agent_move(board: Board, own_player: Player) -> Tuple[int, int]:
     root = Node(copy_board(board), True, own_player)
-    value, path = minmax(root, -5, +5, True)
+    value, path = minmax(root, -2, +2)
     print(f'Player: {own_player} Value: {value} - Path: {path}')
     return path
 
 
-def minmax(node, alpha, beta, is_max):
+def minmax(node, alpha, beta):
     if node.is_leaf():
         return node.get_value(), node.path
 
-    if is_max:
-        value = -5
+    if node.is_max:
+        value = -2
         best_move = None
 
         for child in node.get_children():
 
-            res, path = minmax(child, alpha, beta, False)
+            res, path = minmax(child, alpha, beta)
 
             if res >= value:
                 value = res
                 best_move = child.path
 
+            #if value >= beta:
+            #    return value, best_move
             alpha = max(alpha, value)
-            if beta <= alpha:
-                break
 
         return value, best_move
 
     else:
-        value = +5
+        value = 2
         best_move = None
         for child in node.get_children():
 
-            res, path = minmax(child, alpha, beta, True)
+            res, path = minmax(child, alpha, beta)
 
             if res <= value:
                 value = res
                 best_move = child.path
 
+            #if value <= alpha:
+            #    return value, best_move
             beta = min(beta, value)
-            if beta <= alpha:
-                break
         return value, best_move
 
 
@@ -105,5 +106,5 @@ def get_other_player(player: Player) -> Player:
 
 def copy_board(board: Board) -> Board:
     b = Board()
-    b.board = np.copy(board.board)
+    b.board = copy.deepcopy(board.board)
     return b

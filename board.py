@@ -29,6 +29,14 @@ class Board:
         assert p != Player.NO_PLAYER
         self.board[y][x] = p.value
 
+        # Ensuring the board is valid
+        unique, counts = np.unique(self.board, return_counts=True)
+        d = dict(zip(unique, counts))
+        if p == Player.PLAYER_1:
+            assert d[1] == d.get(2, 0) + 1, f'Invalid for Player 1:\n{self.board_string()}'
+        else:
+            assert d[1] == d.get(2, 0), f'Invalid for Player 1:\n{self.board_string()}'
+
     def get_value(self, x: int, y: int) -> Player:
         assert x < 3
         assert y < 3

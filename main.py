@@ -10,28 +10,31 @@ def main():
     is_p1_human = input(f'Is player 1 a human? [y/N]: ').lower() == 'y'
     is_p2_human = input(f'Is player 2 a human? [y/N]: ').lower() == 'y'
 
-    board = Board()
-    player = Player.PLAYER_1
-
     while True:
 
-        # Getting next move
-        if player == player.PLAYER_1:
-            next_turn = get_human_move(board) if is_p1_human else get_agent_move(board, Player.PLAYER_1)
-        else:
-            next_turn = get_human_move(board) if is_p2_human else get_agent_move(board, Player.PLAYER_2)
+        board = Board()
+        player = Player.PLAYER_1
 
-        print(f'Move: {next_turn}')
+        while True:
 
-        board.set_value(next_turn[0], next_turn[1], player)
-        print(f'Board:\n{board.board_string()}')
+            # Getting next move
+            if player == player.PLAYER_1:
+                next_turn = get_human_move(board) if is_p1_human else get_agent_move(board, Player.PLAYER_1)
+            else:
+                next_turn = get_human_move(board) if is_p2_human else get_agent_move(board, Player.PLAYER_2)
 
-        winner = board.get_winner()
-        if winner != Player.NO_PLAYER or len(board.get_valid_turns()) == 0:
-            print(f'\n\n{board.board_string()}\n\nWinner: {winner}')
-            break
+            print(f'Move: {next_turn}')
 
-        player = get_other_player(player)
+            board.set_value(next_turn[0], next_turn[1], player)
+            print(f'Board:\n{board.board_string()}')
+
+            winner = board.get_winner()
+            if winner != Player.NO_PLAYER or len(board.get_valid_turns()) == 0:
+                print(f'\n\n{board.board_string()}\n\nWinner: {winner}')
+                assert winner == Player.NO_PLAYER
+                break
+
+            player = get_other_player(player)
 
 
 def get_human_move(board: Board) -> Tuple[int, int]:
